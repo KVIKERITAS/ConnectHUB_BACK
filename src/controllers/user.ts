@@ -44,8 +44,8 @@ const loginUser = async (req: Request, res: Response) => {
         const token = jwt.sign(user, process.env.JWT_SECRET)
 
         res.status(200).json({
-            ...user,
-            token
+            user,
+            token: token
         })
 
     } catch (error) {
@@ -54,4 +54,52 @@ const loginUser = async (req: Request, res: Response) => {
     }
 }
 
-export default {registerUser, loginUser}
+const changeImage = async (req: Request, res: Response) => {
+    try {
+        const data = req.body
+
+        const user = await User.findOneAndUpdate(
+          {_id: data.data.id},
+          {$set: {image: data.image}})
+
+        if (!user) return  res.status(400).json({error:true, message: "User was not found"})
+
+        const updatedUser = {
+            username: user.username,
+            image: user.image,
+            id: user._id
+        }
+
+        res.status(200).json({ ...updatedUser })
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(400)
+    }
+}
+
+const changePassword = async (req: Request, res: Response) => {
+    try {
+        const data = req.body
+
+        const hash = await bcrypt.hash(data.password, 10)
+
+        const user = await User.findOneAndUpdate(
+          {_id: data.data.id},
+          {$set: {password: hash}})
+
+        if (!user) return res.status(400).json({error:true, message: "User was not found"})
+
+        const updatedUser = {
+            username: user.username,
+            image: user.image,
+            id: user._id
+        }
+
+        res.status(200).json({ error:false, message: "Password was successfully changed"})
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(400)
+    }
+}
+
+export default {registerUser, loginUser, changeImage, changePassword}

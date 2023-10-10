@@ -6,5 +6,7 @@ const router = express.Router()
 
 router.post("/register", middleware.validate, userController.registerUser)
 router.post("/login", userController.loginUser)
+router.post("/change/image", middleware.authorize, userController.changeImage)
+router.post("/change/password", middleware.authorize, userController.changePassword)
 
 export default router
