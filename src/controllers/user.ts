@@ -16,7 +16,7 @@ const registerUser = async (req: Request, res: Response) => {
         })
 
         await user.save()
-        return res.status(200).json(user)
+        return res.status(200).json({ error:false, message: "User successfully created" })
     } catch (error) {
         console.log(error)
         res.sendStatus(400)
@@ -29,11 +29,11 @@ const loginUser = async (req: Request, res: Response) => {
 
         const foundUser = await User.findOne({username})
 
-        if(!foundUser) return res.sendStatus(400)
+        if(!foundUser) return res.status(400).json({ error:true, message: "Bad credentials" })
 
         const passwordMatch = await bcrypt.compare(password, foundUser.password)
 
-        if(!passwordMatch) return res.sendStatus(403)
+        if(!passwordMatch) return res.status(400).json({ error:true, message: "Bad credentials" })
 
         const user = {
             username: foundUser.username,
