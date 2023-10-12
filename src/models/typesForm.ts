@@ -13,3 +13,21 @@ export const registerSchema = z
         message: 'Passwords must match',
         path: ['confirmPassword'],
     })
+
+export const loginSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
+})
+
+export const imageChangeSchema = z.object({
+  image: z.string().startsWith('http', 'Invalid link'),
+})
+
+export const passwordChangeSchema = z.object({
+  password: z.string().min(6, 'Password must be at least 6 characters long'),
+})
+
+export const createPostSchema = z.object({
+  image: z.string().startsWith('http', 'Invalid link'),
+  message: z.string().min(1, 'Text area is empty'),
+})

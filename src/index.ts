@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors"
 import mongoose from "mongoose"
 import userRouter from "./routes/user"
+import postRouter from "./routes/post"
 require("dotenv").config()
 
 const app = express()
@@ -21,3 +22,4 @@ mongoose.connect(process.env.DB_TOKEN)
 mongoose.connection.on("error", (error: Error) => console.log(error))
 
 app.use("/api/users", userRouter)
+app.use("/api/posts", postRouter)

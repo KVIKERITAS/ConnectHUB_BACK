@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import User from "../db/users"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import { imageChangeSchema, loginSchema, passwordChangeSchema } from '../models/typesForm';
 require("dotenv").config()
 
 const registerUser = async (req: Request, res: Response) => {
@@ -25,6 +26,11 @@ const registerUser = async (req: Request, res: Response) => {
 
 const loginUser = async (req: Request, res: Response) => {
     try{
+
+        const data = loginSchema.safeParse(req.body)
+
+        if (!data.success) return res.status(400).json({error: true, message: "Invalid data"})
+
         const {username, password} = req.body
 
         const foundUser = await User.findOne({username})
@@ -56,6 +62,11 @@ const loginUser = async (req: Request, res: Response) => {
 
 const changeImage = async (req: Request, res: Response) => {
     try {
+
+        const checkData = imageChangeSchema.safeParse(req.body)
+
+        if (!checkData.success) return res.status(400).json({error: true, message: "Invalid data"})
+
         const data = req.body
 
         const user = await User.findOneAndUpdate(
@@ -79,6 +90,10 @@ const changeImage = async (req: Request, res: Response) => {
 
 const changePassword = async (req: Request, res: Response) => {
     try {
+        const checkData = passwordChangeSchema.safeParse(req.body)
+
+        if (!checkData.success) return res.status(400).json({error: true, message: "Invalid data"})
+
         const data = req.body
 
         const hash = await bcrypt.hash(data.password, 10)
@@ -89,13 +104,7 @@ const changePassword = async (req: Request, res: Response) => {
 
         if (!user) return res.status(400).json({error:true, message: "User was not found"})
 
-        const updatedUser = {
-            username: user.username,
-            image: user.image,
-            id: user._id
-        }
-
-        res.status(200).json({ error:false, message: "Password was successfully changed"})
+        res.status(200).json({ error:false, message: "Password successfully changed"})
     } catch (error) {
         console.log(error);
         res.sendStatus(400)
