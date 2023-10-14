@@ -111,4 +111,19 @@ const changePassword = async (req: Request, res: Response) => {
     }
 }
 
-export default {registerUser, loginUser, changeImage, changePassword}
+const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const {data} = req.body
+
+        const users = await User.find({}, {password: 0})
+        const filteredUsers = users.filter(user => user.username !== data.username)
+
+        res.status(200).json({error:false, users: filteredUsers})
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(400)
+    }
+}
+
+export default {registerUser, loginUser, changeImage, changePassword, getAllUsers}
