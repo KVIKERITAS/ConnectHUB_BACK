@@ -64,4 +64,19 @@ const handlePostLike = async (req: Request, res: Response) => {
   }
 }
 
-export default {createPost, getAllPosts, handlePostLike}
+const handleComment = async (req: Request, res: Response) => {
+  try {
+    const { comment, data } = req.body
+    const { post_id } = req.params
+
+    await Post.findOneAndUpdate({_id: post_id}, {$push: {comments: {username: data.username, comment: comment}}})
+
+    res.status(200).json({error: false, message: "Comment added"})
+
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400)
+  }
+}
+
+export default {createPost, getAllPosts, handlePostLike, handleComment}
