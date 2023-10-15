@@ -7,8 +7,9 @@ const PostSchema: Schema = new Schema({
   userId: {type: String, required: true},
   username: {type: String, required: true},
   userImage: {type: String, required: true},
-  comments: {type: [], required: false},
-  likes: {type: [], required: false}
+  comments: {type: Array, required: false},
+  likes: {type: Array, required: false},
+  createdAt: {type: Date, required: true}
 })
 
 export default mongoose.model("Post", PostSchema)

@@ -17,7 +17,8 @@ const createPost = async (req: Request, res: Response) => {
       message,
       userId: data.id,
       username: data.username,
-      userImage: data.image
+      userImage: data.image,
+      createdAt: Date.now()
     })
 
     await post.save()
