@@ -116,7 +116,7 @@ const getAllUsers = async (req: Request, res: Response) => {
         const {data} = req.body
 
         const users = await User.find({}, {password: 0})
-        const filteredUsers = users.filter(user => user.username !== data.username)
+        const filteredUsers = users.filter(user => user.username !== data.username).reverse()
 
         res.status(200).json({error:false, users: filteredUsers})
 

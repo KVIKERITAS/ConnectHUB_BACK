@@ -32,7 +32,8 @@ const createPost = async (req: Request, res: Response) => {
 
 const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await Post.find()
+    let posts = await Post.find()
+    posts = posts.reverse();
 
     res.status(200).json({posts})
 
@@ -42,4 +43,25 @@ const getAllPosts = async (req: Request, res: Response) => {
   }
 }
 
-export default {createPost, getAllPosts}
+const handlePostLike = async (req: Request, res: Response) => {
+  try {
+    const { post_id } = req.params
+    const { data } = req.body
+
+    const post = await Post.findOne({_id: post_id})
+    const isLiked = post.likes.find((like:string) => like === data.id)
+
+    if (!isLiked) {
+      await Post.findOneAndUpdate({_id: post_id}, {$push: {likes: data.id}})
+      return res.status(200).json({error: false, message: "Post liked"})
+    } else {
+      await Post.findOneAndUpdate({_id: post_id}, {$pull: {likes: data.id}})
+      return res.status(200).json({error: false, message: "Post disliked"})
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400)
+  }
+}
+
+export default {createPost, getAllPosts, handlePostLike}

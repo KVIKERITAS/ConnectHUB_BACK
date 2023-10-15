@@ -6,5 +6,6 @@ const router = express.Router()
 
 router.post("/create", middleware.authorize, postController.createPost)
 router.get("/get", middleware.authorize, postController.getAllPosts)
+router.get("/like/:post_id", middleware.authorize, postController.handlePostLike)
 
 export default router
