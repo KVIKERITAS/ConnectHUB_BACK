@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 import User from "../db/users"
+import Chat from "../db/chat"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { imageChangeSchema, loginSchema, passwordChangeSchema } from '../models/typesForm';
@@ -44,14 +45,14 @@ const loginUser = async (req: Request, res: Response) => {
         const user = {
             username: foundUser.username,
             image: foundUser.image,
-            id: foundUser._id
+            _id: foundUser._id
         }
 
         const token = jwt.sign(user, process.env.JWT_SECRET)
 
         res.status(200).json({
             user,
-            token: token
+            token: token,
         })
 
     } catch (error) {
