@@ -1,6 +1,5 @@
 import {Request, Response} from "express";
 import User from "../db/users"
-import Chat from "../db/chat"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { imageChangeSchema, loginSchema, passwordChangeSchema } from '../models/typesForm';
@@ -63,16 +62,19 @@ const loginUser = async (req: Request, res: Response) => {
 
 const changeImage = async (req: Request, res: Response) => {
     try {
-
         const checkData = imageChangeSchema.safeParse(req.body)
 
         if (!checkData.success) return res.status(400).json({error: true, message: "Invalid data"})
 
         const data = req.body
 
+        console.log(data);
+
         const user = await User.findOneAndUpdate(
-          {_id: data.data.id},
+          {_id: data.data._id},
           {$set: {image: data.image}})
+
+        console.log(user);
 
         if (!user) return  res.status(400).json({error:true, message: "User was not found"})
 

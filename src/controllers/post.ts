@@ -15,7 +15,7 @@ const createPost = async (req: Request, res: Response) => {
     const post = new Post({
       image,
       message,
-      userId: data.id,
+      userId: data._id,
       username: data.username,
       userImage: data.image,
       createdAt: Date.now()
@@ -50,13 +50,13 @@ const handlePostLike = async (req: Request, res: Response) => {
     const { data } = req.body
 
     const post = await Post.findOne({_id: post_id})
-    const isLiked = post.likes.find((like:string) => like === data.id)
+    const isLiked = post.likes.find((like:string) => like === data._id)
 
     if (!isLiked) {
-      await Post.findOneAndUpdate({_id: post_id}, {$push: {likes: data.id}})
+      await Post.findOneAndUpdate({_id: post_id}, {$push: {likes: data._id}})
       return res.status(200).json({error: false, message: "Post liked"})
     } else {
-      await Post.findOneAndUpdate({_id: post_id}, {$pull: {likes: data.id}})
+      await Post.findOneAndUpdate({_id: post_id}, {$pull: {likes: data._id}})
       return res.status(200).json({error: false, message: "Post disliked"})
     }
   } catch (error) {
