@@ -21,7 +21,11 @@ const sendMessage = async (req: Request, res: Response) => {
   try {
     const data = req.body
 
-    if(data._id === "placeholder") {
+    const foundChat = await Chat.find({participants: data.participants})
+
+    if (foundChat.length > 0) {
+      await Chat.findOneAndUpdate({_id: data._id}, {$push: {chat: data.chat}})
+    } else {
       const chat = new Chat({
         participants: data.participants,
         chat: [data.chat]
@@ -29,7 +33,7 @@ const sendMessage = async (req: Request, res: Response) => {
       await chat.save()
     }
 
-    res.sendStatus(200)
+    res.status(200).json({error: false, message: "Message sent"})
   } catch (error) {
     console.log(error);
     res.sendStatus(400)
