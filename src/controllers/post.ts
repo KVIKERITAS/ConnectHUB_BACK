@@ -44,6 +44,17 @@ const getAllPosts = async (req: Request, res: Response) => {
   }
 }
 
+const getSinglePost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const post = await Post.find({_id: id})
+    res.status(200).json(...post)
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400)
+  }
+}
+
 const handlePostLike = async (req: Request, res: Response) => {
   try {
     const { post_id } = req.params
@@ -80,4 +91,4 @@ const handleComment = async (req: Request, res: Response) => {
   }
 }
 
-export default {createPost, getAllPosts, handlePostLike, handleComment}
+export default {createPost, getAllPosts, handlePostLike, handleComment, getSinglePost}

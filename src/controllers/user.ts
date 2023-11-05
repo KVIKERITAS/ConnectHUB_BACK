@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 import User from "../db/users"
+import Posts from "../db/posts"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { imageChangeSchema, loginSchema, passwordChangeSchema } from '../models/typesForm';
@@ -68,20 +69,18 @@ const changeImage = async (req: Request, res: Response) => {
 
         const data = req.body
 
-        console.log(data);
-
         const user = await User.findOneAndUpdate(
           {_id: data.data._id},
           {$set: {image: data.image}})
 
-        console.log(user);
+        await Posts.updateMany({userId: data.data._id}, {$set: {userImage: data.image}})
 
         if (!user) return  res.status(400).json({error:true, message: "User was not found"})
 
         const updatedUser = {
             username: user.username,
-            image: user.image,
-            id: user._id
+            image: data.image,
+            _id: user._id
         }
 
         res.status(200).json({ ...updatedUser })
@@ -129,4 +128,15 @@ const getAllUsers = async (req: Request, res: Response) => {
     }
 }
 
-export default {registerUser, loginUser, changeImage, changePassword, getAllUsers}
+const getUser = async (req: Request, res: Response) => {
+    try {
+        const {data} = req.body
+
+        res.status(200).json({error: false, user: data})
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(400)
+    }
+}
+
+export default {registerUser, loginUser, changeImage, changePassword, getAllUsers, getUser}

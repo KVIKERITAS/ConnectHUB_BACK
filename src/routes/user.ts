@@ -9,5 +9,6 @@ router.post("/login", userController.loginUser)
 router.post("/change/image", middleware.authorize, userController.changeImage)
 router.post("/change/password", middleware.authorize, userController.changePassword)
 router.get("/get", middleware.authorize, userController.getAllUsers)
+router.get("/autologin", middleware.authorize, userController.getUser)
 
 export default router
