@@ -17,11 +17,24 @@ const getInbox = async (req: Request, res: Response) => {
     res.sendStatus(400)
   }
 }
+
+const getSingleChat = async (req: Request, res: Response) => {
+  try {
+    const {chatId} = req.params
+
+    const chat = await Chat.findOne({_id: chatId})
+
+    res.status(200).json(chat)
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400)
+  }
+}
+
 const sendMessage = async (req: Request, res: Response) => {
   try {
+    res.status(200)
     const data = req.body
-
-    console.log(data.data._id);
 
     const foundChat = await Chat.find({participants: data.participants})
 
@@ -44,4 +57,4 @@ const sendMessage = async (req: Request, res: Response) => {
   }
 }
 
-export default {sendMessage, getInbox}
+export default {sendMessage, getInbox, getSingleChat}
