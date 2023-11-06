@@ -64,11 +64,15 @@ const handlePostLike = async (req: Request, res: Response) => {
     const isLiked = post.likes.find((like:string) => like === data._id)
 
     if (!isLiked) {
-      await Post.findOneAndUpdate({_id: post_id}, {$push: {likes: data._id}})
-      return res.status(200).json({error: false, message: "Post liked"})
+      const post = await Post.findOneAndUpdate({_id: post_id}, {$push: {likes: data._id}}, {new: true})
+      const posts = await Post.find()
+      posts.reverse()
+      return res.status(200).json({error: false, message: "Post liked", posts, post})
     } else {
-      await Post.findOneAndUpdate({_id: post_id}, {$pull: {likes: data._id}})
-      return res.status(200).json({error: false, message: "Post disliked"})
+      const post = await Post.findOneAndUpdate({_id: post_id}, {$pull: {likes: data._id}}, {new: true})
+      const posts = await Post.find()
+      posts.reverse()
+      return res.status(200).json({error: false, message: "Post disliked", posts, post})
     }
   } catch (error) {
     console.log(error);
